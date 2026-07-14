@@ -1,117 +1,112 @@
-const passwordInput = document.getElementById("password");
-const generateBtn = document.getElementById("generateBtn");
-const copyBtn = document.getElementById("copyBtn");
+/* KeyMint — güvenli şifre üreteci (crypto.getRandomValues), güç ölçer, tema */
+(function () {
+  "use strict";
 
-const lengthSlider = document.getElementById("length");
-const lengthValue = document.getElementById("lengthValue");
-const strength = document.getElementById("strength");
+  var SETS = {
+    uppercase: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    lowercase: "abcdefghijklmnopqrstuvwxyz",
+    numbers: "0123456789",
+    symbols: "!@#$%^&*()-_=+[]{};:,.?/"
+  };
+  var AMBIGUOUS = /[0O1lI|`]/g;
 
-const uppercase = document.getElementById("uppercase");
-const lowercase = document.getElementById("lowercase");
-const numbers = document.getElementById("numbers");
-const symbols = document.getElementById("symbols");
+  var el = function (id) { return document.getElementById(id); };
 
-const upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-const lowerChars = "abcdefghijklmnopqrstuvwxyz";
-const numberChars = "0123456789";
-const symbolChars = "!@#$%^&*()_+-=[]{}<>?";
+  function randomInt(max) {
+    // Modulo bias'sız kriptografik rastgele tam sayı [0, max)
+    var arr = new Uint32Array(1);
+    var limit = Math.floor(0xFFFFFFFF / max) * max;
+    var x;
+    do { crypto.getRandomValues(arr); x = arr[0]; } while (x >= limit);
+    return x % max;
+  }
 
-lengthValue.textContent = lengthSlider.value;
+  function buildPool() {
+    var pool = "";
+    if (el("uppercase").checked) pool += SETS.uppercase;
+    if (el("lowercase").checked) pool += SETS.lowercase;
+    if (el("numbers").checked) pool += SETS.numbers;
+    if (el("symbols").checked) pool += SETS.symbols;
+    if (el("noAmbiguous").checked) pool = pool.replace(AMBIGUOUS, "");
+    return pool;
+  }
 
-lengthSlider.addEventListener("input", () => {
-    lengthValue.textContent = lengthSlider.value;
-});
-
-function getRandomCharacter(characters) {
-    const random = new Uint32Array(1);
-    crypto.getRandomValues(random);
-
-    return characters[random[0] % characters.length];
-}
-
-function shuffle(text) {
-    const array = text.split("");
-
-    for (let i = array.length - 1; i > 0; i--) {
-        const random = new Uint32Array(1);
-        crypto.getRandomValues(random);
-
-        const j = random[0] % (i + 1);
-
-        [array[i], array[j]] = [array[j], array[i]];
+  function generate() {
+    var len = parseInt(el("length").value, 10);
+    var pool = buildPool();
+    if (!pool) {
+      el("password").value = "";
+      setStrength(0, "En az bir karakter türü seçin");
+      status("Lütfen en az bir karakter türü seçin.");
+      return;
     }
+    var out = "";
+    for (var i = 0; i < len; i++) out += pool[randomInt(pool.length)];
+    el("password").value = out;
+    evaluate(out, pool.length);
+    status("");
+  }
 
-    return array.join("");
-}
+  // Entropi = uzunluk × log2(havuz boyutu)
+  function evaluate(pw, poolSize) {
+    var entropy = pw.length * (Math.log(poolSize) / Math.log(2));
+    var pct, cls, label;
+    if (entropy < 40) { pct = 25; cls = "bad"; label = "Zayıf"; }
+    else if (entropy < 60) { pct = 55; cls = "warn"; label = "Orta"; }
+    else if (entropy < 80) { pct = 80; cls = "ok"; label = "Güçlü"; }
+    else { pct = 100; cls = "strong"; label = "Çok güçlü"; }
+    setStrength(pct, label + " · ~" + Math.round(entropy) + " bit entropi", cls);
+  }
 
-function updateStrength(length) {
-    if (length < 12) {
-        strength.textContent = "Strength: Weak";
-        strength.style.color = "#ef4444";
-    } else if (length < 20) {
-        strength.textContent = "Strength: Medium";
-        strength.style.color = "#f59e0b";
-    } else {
-        strength.textContent = "Strength: Strong";
-        strength.style.color = "#22c55e";
-    }
-}
+  function setStrength(pct, text, cls) {
+    var bar = el("meterBar"), s = el("strength");
+    bar.style.width = pct + "%";
+    bar.className = "meter-bar" + (cls ? " bar-" + cls : "");
+    s.textContent = "Güç: " + text;
+    s.className = "strength-label" + (cls ? " s-" + cls : "");
+  }
 
-function generatePassword() {
-    let availableChars = "";
-    let password = [];
+  function status(msg) { var s = el("status"); if (s) s.textContent = msg; }
 
-    if (uppercase.checked) {
-        availableChars += upperChars;
-        password.push(getRandomCharacter(upperChars));
-    }
-
-    if (lowercase.checked) {
-        availableChars += lowerChars;
-        password.push(getRandomCharacter(lowerChars));
-    }
-
-    if (numbers.checked) {
-        availableChars += numberChars;
-        password.push(getRandomCharacter(numberChars));
-    }
-
-    if (symbols.checked) {
-        availableChars += symbolChars;
-        password.push(getRandomCharacter(symbolChars));
-    }
-
-    if (availableChars.length === 0) {
-        alert("Please select at least one character type.");
-        return;
-    }
-
-    while (password.length < Number(lengthSlider.value)) {
-        password.push(getRandomCharacter(availableChars));
-    }
-
-    passwordInput.value = shuffle(password.join(""));
-    updateStrength(Number(lengthSlider.value));
-}
-
-generateBtn.addEventListener("click", generatePassword);
-
-copyBtn.addEventListener("click", async () => {
-    if (passwordInput.value === "") return;
-
+  async function copy() {
+    var pw = el("password").value;
+    if (!pw) { status("Önce bir şifre üretin."); return; }
     try {
-        await navigator.clipboard.writeText(passwordInput.value);
+      if (navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(pw);
+      else { var t = el("password"); t.removeAttribute("readonly"); t.select(); document.execCommand("copy"); t.setAttribute("readonly", ""); }
+      status("Şifre panoya kopyalandı.");
+    } catch (e) { status("Kopyalama başarısız oldu."); }
+  }
 
-        const originalText = copyBtn.textContent;
-        copyBtn.textContent = "Copied!";
+  el("length").addEventListener("input", function () {
+    el("lengthValue").textContent = el("length").value;
+    generate();
+  });
+  ["uppercase", "lowercase", "numbers", "symbols", "noAmbiguous"].forEach(function (id) {
+    el(id).addEventListener("change", generate);
+  });
+  el("generateBtn").addEventListener("click", generate);
+  el("copyBtn").addEventListener("click", copy);
 
-        setTimeout(() => {
-            copyBtn.textContent = originalText;
-        }, 1500);
-    } catch (error) {
-        alert("Failed to copy password.");
+  // Tema
+  (function () {
+    var KEY = "onerkoray.theme";
+    var order = ["auto", "light", "dark"];
+    var btn = el("themeToggle");
+    function apply(m) {
+      document.documentElement.setAttribute("data-theme", m);
+      var l = btn && btn.querySelector(".theme-toggle-label");
+      if (l) l.textContent = m.charAt(0).toUpperCase() + m.slice(1);
     }
-});
+    apply(localStorage.getItem(KEY) || "auto");
+    if (btn) btn.addEventListener("click", function () {
+      var cur = localStorage.getItem(KEY) || "auto";
+      var next = order[(order.indexOf(cur) + 1) % order.length];
+      localStorage.setItem(KEY, next); apply(next);
+    });
+  })();
 
-// Sayfa açıldığında ilk şifreyi oluştur
-generatePassword();
+  var yr = el("year"); if (yr) yr.textContent = new Date().getFullYear();
+
+  generate();
+})();

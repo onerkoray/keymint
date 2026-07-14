@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="KeyMint">
+  <rect width="32" height="32" rx="7" fill="#0e7c66"/>
+  <path d="M11 14v-2a5 5 0 0 1 10 0v2h1.2c.6 0 1.1.5 1.1 1.1v7.8c0 .6-.5 1.1-1.1 1.1H9.8c-.6 0-1.1-.5-1.1-1.1v-7.8c0-.6.5-1.1 1.1-1.1H11Zm2 0h6v-2a3 3 0 0 0-6 0v2Z" fill="#fff"/>
+  <circle cx="16" cy="19" r="1.6" fill="#0e7c66"/>
+</svg>

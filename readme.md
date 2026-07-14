@@ -1,39 +1,17 @@
-# 🔐 KeyMint
+# KeyMint — Şifre Araçları
 
-## About
+Koray Öner tarafından geliştirilen, tamamen tarayıcıda çalışan ücretsiz şifre araçları.
 
-KeyMint is a modern password generator built with HTML, CSS and JavaScript.
+**Canlı:** https://onerkoray.github.io/keymint/
 
-**Developer:** Koray Öner
+## Araçlar
+- **[KeyMint Şifre Üreteci](https://onerkoray.github.io/keymint/)** — `crypto.getRandomValues` ile güçlü, rastgele şifreler.
+- **[Şifre Güç Testi](https://onerkoray.github.io/keymint/sifre-guc-testi/)** — entropi ve tahmini kırılma süresiyle parola gücü analizi.
 
-## Features
+Şifreler ve girdiler hiçbir yere gönderilmez; her şey cihazınızda hesaplanır.
 
-- Generate secure passwords
-- Adjustable length (8–32)
-- Uppercase, lowercase, numbers and symbols
-- Password strength indicator
-- One-click copy to clipboard
-- Cryptographically secure random generation (Web Crypto API)
+## Teknoloji
+Vanilla HTML, CSS, JavaScript. Framework yok, bağımlılık yok, derleme yok.
 
-## Technologies
-
-- HTML5
-- CSS3
-- JavaScript
-- Web Crypto API
-
-## Project Structure
-
-keymint/
-├── index.html
-├── style.css
-├── script.js
-└── README.md
-
-## Screenshot
-
-(Add a screenshot here)
-
-## License
-
-MIT
+## Lisans
+MIT © Koray Öner
