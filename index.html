@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>KeyMint | Secure Password Generator</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="container">
+
+        <h1>🔐 KeyMint</h1>
+        <p>Generate secure passwords in one click.</p>
+
+        <div class="password-box">
+            <input
+                type="text"
+                id="password"
+                placeholder="Your password will appear here..."
+                readonly>
+        </div>
+
+        <p id="strength">Strength: Strong</p>
+
+        <section class="options">
+
+            <div class="option">
+                <label for="length">Password Length</label>
+                <span id="lengthValue">16</span>
+            </div>
+
+            <input
+                type="range"
+                id="length"
+                min="8"
+                max="32"
+                value="16">
+
+            <label class="checkbox">
+                <input
+                    type="checkbox"
+                    id="uppercase"
+                    checked>
+                Uppercase Letters
+            </label>
+
+            <label class="checkbox">
+                <input
+                    type="checkbox"
+                    id="lowercase"
+                    checked>
+                Lowercase Letters
+            </label>
+
+            <label class="checkbox">
+                <input
+                    type="checkbox"
+                    id="numbers"
+                    checked>
+                Numbers
+            </label>
+
+            <label class="checkbox">
+                <input
+                    type="checkbox"
+                    id="symbols"
+                    checked>
+                Symbols
+            </label>
+
+        </section>
+
+        <button id="generateBtn">
+            Generate Password
+        </button>
+
+        <button id="copyBtn">
+            Copy Password
+        </button>
+
+    </main>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
