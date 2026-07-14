@@ -7,10 +7,15 @@
 
     <title>KeyMint | Secure Password Generator</title>
 
+    <meta name="description"
+        content="Generate strong and secure passwords instantly with KeyMint.">
+    <meta name="author" content="Öner Koray">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
 
     <link rel="stylesheet" href="style.css">
 </head>
@@ -19,8 +24,10 @@
 
     <main class="container">
 
-        <h1>🔐 KeyMint</h1>
-        <p>Generate secure passwords in one click.</p>
+        <header>
+            <h1>🔐 KeyMint</h1>
+            <p>Generate secure passwords instantly.</p>
+        </header>
 
         <div class="password-box">
             <input
@@ -47,34 +54,22 @@
                 value="16">
 
             <label class="checkbox">
-                <input
-                    type="checkbox"
-                    id="uppercase"
-                    checked>
+                <input type="checkbox" id="uppercase" checked>
                 Uppercase Letters
             </label>
 
             <label class="checkbox">
-                <input
-                    type="checkbox"
-                    id="lowercase"
-                    checked>
+                <input type="checkbox" id="lowercase" checked>
                 Lowercase Letters
             </label>
 
             <label class="checkbox">
-                <input
-                    type="checkbox"
-                    id="numbers"
-                    checked>
+                <input type="checkbox" id="numbers" checked>
                 Numbers
             </label>
 
             <label class="checkbox">
-                <input
-                    type="checkbox"
-                    id="symbols"
-                    checked>
+                <input type="checkbox" id="symbols" checked>
                 Symbols
             </label>
 
@@ -87,6 +82,10 @@
         <button id="copyBtn">
             Copy Password
         </button>
+
+        <footer>
+            <small>Built with  by Koray Öner </small>
+        </footer>
 
     </main>
 
